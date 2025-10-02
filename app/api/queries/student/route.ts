@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { db } from "@/lib/firebase"
 import { collection, query, where, getDocs } from "firebase/firestore"
+import { normalizeRollNumber } from "@/lib/utils"
 
 export async function GET(request: Request) {
   try {
@@ -11,10 +12,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Roll number required" }, { status: 400 })
     }
 
+    // Normalize roll number (uppercase, proper formatting)
+    const normalizedRollNo = normalizeRollNumber(rollNo)
+
     // Get all queries for this student
     const q = query(
       collection(db, "queries"),
-      where("rollNo", "==", rollNo)
+      where("rollNo", "==", normalizedRollNo)
     )
     
     const querySnapshot = await getDocs(q)

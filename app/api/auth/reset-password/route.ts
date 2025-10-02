@@ -3,6 +3,7 @@ import { auth, db } from "@/lib/firebase"
 import { sendPasswordResetEmail } from "firebase/auth"
 import { rollNumberToEmail } from "@/lib/email"
 import { doc, getDoc } from "firebase/firestore"
+import { normalizeRollNumber } from "@/lib/utils"
 
 export async function POST(request: Request) {
   try {
@@ -12,14 +13,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Roll number required" }, { status: 400 })
     }
 
+    // Normalize roll number (uppercase, proper formatting)
+    const normalizedRollNo = normalizeRollNumber(rollNo)
+
     // Check if user is registered in Firestore (prevents misleading success message)
-    const userDoc = await getDoc(doc(db, "users", rollNo))
+    const userDoc = await getDoc(doc(db, "users", normalizedRollNo))
     if (!userDoc.exists()) {
       return NextResponse.json({ error: "No account found with this roll number. Please contact your TA." }, { status: 404 })
     }
 
     // Convert roll number to email
-    const email = rollNumberToEmail(rollNo)
+    const email = rollNumberToEmail(normalizedRollNo)
 
     // Send password reset email through Firebase Auth
     await sendPasswordResetEmail(auth, email)

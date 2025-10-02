@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { formatRollNumberInput } from "@/lib/utils"
 
 export default function SignupPage() {
   const router = useRouter()
@@ -107,7 +108,7 @@ export default function SignupPage() {
                   type="text"
                   placeholder="e.g., 22F-3277"
                   value={rollNo}
-                  onChange={(e) => setRollNo(e.target.value)}
+                  onChange={(e) => setRollNo(formatRollNumberInput(e.target.value))}
                   required
                   disabled={loading}
                 />

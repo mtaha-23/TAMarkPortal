@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { getStudentMarks } from "@/lib/csv-parser"
+import { normalizeRollNumber } from "@/lib/utils"
 
 export async function GET(request: Request) {
   try {
@@ -10,8 +11,11 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Roll number required" }, { status: 400 })
     }
 
+    // Normalize roll number (uppercase, proper formatting)
+    const normalizedRollNo = normalizeRollNumber(rollNo)
+
     // Get marks directly from CSV files
-    const courses = await getStudentMarks(rollNo)
+    const courses = await getStudentMarks(normalizedRollNo)
 
     if (courses.length === 0) {
       return NextResponse.json({ error: "No marks found for this roll number" }, { status: 404 })
@@ -19,7 +23,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
-      rollNo,
+      rollNo: normalizedRollNo,
       name: courses[0].name,
       courses,
     })

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { db } from "@/lib/firebase"
 import { collection, addDoc } from "firebase/firestore"
 import { QueryStatus } from "@/lib/admin"
+import { normalizeRollNumber } from "@/lib/utils"
 
 export async function POST(request: Request) {
   try {
@@ -13,9 +14,12 @@ export async function POST(request: Request) {
       }, { status: 400 })
     }
 
+    // Normalize roll number (uppercase, proper formatting)
+    const normalizedRollNo = normalizeRollNumber(rollNo)
+
     // Create query in Firestore
     const queryDoc = await addDoc(collection(db, "queries"), {
-      rollNo,
+      rollNo: normalizedRollNo,
       name,
       email,
       courses: courses || "Unknown",

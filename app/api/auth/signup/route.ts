@@ -4,6 +4,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth"
 import { doc, setDoc, getDoc } from "firebase/firestore"
 import { findStudentInCSVs } from "@/lib/csv-parser"
 import { rollNumberToEmail } from "@/lib/email"
+import { normalizeRollNumber } from "@/lib/utils"
 
 export async function POST(request: Request) {
   try {
@@ -18,18 +19,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Password must be at least 6 characters" }, { status: 400 })
     }
 
+    // Normalize roll number (uppercase, proper formatting)
+    const normalizedRollNo = normalizeRollNumber(rollNo)
+
     // Convert roll number to email (e.g., 22F-3277 -> f223277@cfd.nu.edu.pk)
-    const email = rollNumberToEmail(rollNo)
+    const email = rollNumberToEmail(normalizedRollNo)
 
     // Check if roll number exists in CSV files
-    const studentInfo = await findStudentInCSVs(rollNo)
+    const studentInfo = await findStudentInCSVs(normalizedRollNo)
 
     if (!studentInfo.found) {
       return NextResponse.json({ error: "Roll number not found in records" }, { status: 404 })
     }
 
     // Check if user already exists in Firestore
-    const userDocRef = doc(db, "users", rollNo)
+    const userDocRef = doc(db, "users", normalizedRollNo)
     const userDoc = await getDoc(userDocRef)
 
     if (userDoc.exists()) {
@@ -42,7 +46,7 @@ export async function POST(request: Request) {
 
     // Store user metadata in Firestore (no password stored here!)
     await setDoc(userDocRef, {
-      rollNo,
+      rollNo: normalizedRollNo,
       name: studentInfo.name,
       email,
       uid: user.uid,
@@ -53,7 +57,7 @@ export async function POST(request: Request) {
       success: true,
       message: "Account created successfully",
       student: {
-        rollNo,
+        rollNo: normalizedRollNo,
         name: studentInfo.name,
         email,
       },

@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword } from "firebase/auth"
 import { doc, getDoc, collection, addDoc } from "firebase/firestore"
 import { rollNumberToEmail } from "@/lib/email"
 import { ActivityType } from "@/lib/admin"
+import { normalizeRollNumber } from "@/lib/utils"
 
 export async function POST(request: Request) {
   try {
@@ -13,15 +14,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Roll number and password required" }, { status: 400 })
     }
 
+    // Normalize roll number (uppercase, proper formatting)
+    const normalizedRollNo = normalizeRollNumber(rollNo)
+
     // Convert roll number to email
-    const email = rollNumberToEmail(rollNo)
+    const email = rollNumberToEmail(normalizedRollNo)
 
     // Authenticate with Firebase Auth
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
     const user = userCredential.user
 
     // Get user data from Firestore
-    const userDocRef = doc(db, "users", rollNo)
+    const userDocRef = doc(db, "users", normalizedRollNo)
     const userDoc = await getDoc(userDocRef)
 
     if (!userDoc.exists()) {

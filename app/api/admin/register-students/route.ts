@@ -5,6 +5,7 @@ import { doc, setDoc, getDoc } from "firebase/firestore"
 import { getAllCSVFiles, parseCSVFile } from "@/lib/csv-parser"
 import { rollNumberToEmail, generateRandomPassword } from "@/lib/email"
 import { isAdmin } from "@/lib/admin"
+import { normalizeRollNumber } from "@/lib/utils"
 
 export async function POST(request: Request) {
   try {
@@ -37,14 +38,17 @@ export async function POST(request: Request) {
         
         if (!rollNo || !name) continue
 
-        if (!studentMap.has(rollNo)) {
-          studentMap.set(rollNo, {
-            rollNo,
+        // Normalize roll number (uppercase, proper formatting)
+        const normalizedRollNo = normalizeRollNumber(rollNo)
+
+        if (!studentMap.has(normalizedRollNo)) {
+          studentMap.set(normalizedRollNo, {
+            rollNo: normalizedRollNo,
             name,
             courses: [fileName]
           })
         } else {
-          studentMap.get(rollNo).courses.push(fileName)
+          studentMap.get(normalizedRollNo).courses.push(fileName)
         }
       }
     }
@@ -52,6 +56,7 @@ export async function POST(request: Request) {
     // Register each unique student
     for (const [rollNo, studentData] of studentMap) {
       try {
+        // Roll number is already normalized from the map
         const email = rollNumberToEmail(rollNo)
         
         // Check if already registered
