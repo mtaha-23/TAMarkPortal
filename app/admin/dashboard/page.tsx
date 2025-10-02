@@ -140,7 +140,7 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-3">
               <Shield className="h-8 w-8 text-blue-400" />
               <div>
-                <h1 className="text-xl font-bold text-white">Admin Dashboard</h1>
+                <h1 className="text-xl font-bold text-white">TA Dashboard</h1>
                 <p className="text-sm text-slate-300">{admin?.email}</p>
               </div>
             </div>
@@ -191,7 +191,7 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Student Activity Logs</CardTitle>
-              <CardDescription>Track all student login, logout, and activity</CardDescription>
+              <CardDescription>Monitor all student login, logout, and portal activity</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -262,14 +262,14 @@ export default function AdminDashboard() {
 
                   {query.adminResponse && (
                     <div className="bg-blue-50 p-3 rounded">
-                      <strong className="text-sm text-blue-900">Admin Response:</strong>
+                      <strong className="text-sm text-blue-900">TA Response:</strong>
                       <p className="mt-1 text-sm text-blue-800">{query.adminResponse}</p>
                     </div>
                   )}
 
                   {query.adminComment && (
                     <div className="bg-gray-50 p-3 rounded">
-                      <strong className="text-sm text-gray-900">Admin Comment:</strong>
+                      <strong className="text-sm text-gray-900">Internal TA Comment:</strong>
                       <p className="mt-1 text-sm text-gray-700">{query.adminComment}</p>
                     </div>
                   )}
@@ -287,12 +287,12 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="comment">Internal Comment (not visible to student)</Label>
+                        <Label htmlFor="comment">Internal TA Comment (not visible to student)</Label>
                         <Input
                           id="comment"
                           value={adminComment}
                           onChange={(e) => setAdminComment(e.target.value)}
-                          placeholder="Add internal notes..."
+                          placeholder="Add internal TA notes..."
                           className="mt-1"
                         />
                       </div>

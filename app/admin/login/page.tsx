@@ -50,9 +50,9 @@ export default function AdminLoginPage() {
           <div className="flex items-center justify-center mb-4">
             <Shield className="h-12 w-12 text-blue-500" />
           </div>
-          <CardTitle className="text-2xl font-bold text-center">Admin Portal</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">TA Portal</CardTitle>
           <CardDescription className="text-center">
-            Secure access for administrators only
+            Secure access for teaching assistants only
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -88,7 +88,7 @@ export default function AdminLoginPage() {
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Logging in..." : "Login as Admin"}
+              {loading ? "Logging in..." : "Login as TA"}
             </Button>
           </form>
         </CardContent>

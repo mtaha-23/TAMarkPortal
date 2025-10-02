@@ -253,7 +253,7 @@ export default function QueriesPage() {
 
                   {query.adminResponse && (
                     <div className="bg-blue-50 p-3 rounded border border-blue-200">
-                      <strong className="text-sm text-blue-900">Admin Response:</strong>
+                      <strong className="text-sm text-blue-900">TA Response:</strong>
                       <p className="mt-1 text-sm text-blue-800">{query.adminResponse}</p>
                     </div>
                   )}
@@ -261,7 +261,7 @@ export default function QueriesPage() {
                   {query.status === QueryStatus.CLOSED && !query.adminResponse && (
                     <div className="bg-gray-50 p-3 rounded">
                       <p className="text-sm text-gray-600">
-                        This query has been closed by the administrator.
+                        This query has been closed by the teaching assistant.
                       </p>
                     </div>
                   )}
