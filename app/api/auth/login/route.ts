@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
 import { db, auth } from "@/lib/firebase"
 import { signInWithEmailAndPassword } from "firebase/auth"
-import { doc, getDoc } from "firebase/firestore"
+import { doc, getDoc, collection, addDoc } from "firebase/firestore"
 import { rollNumberToEmail } from "@/lib/email"
+import { ActivityType } from "@/lib/admin"
 
 export async function POST(request: Request) {
   try {
@@ -28,6 +29,16 @@ export async function POST(request: Request) {
     }
 
     const userData = userDoc.data()
+
+    // Log activity
+    await addDoc(collection(db, "activity_logs"), {
+      rollNo: userData.rollNo,
+      name: userData.name,
+      email: userData.email,
+      activityType: ActivityType.LOGIN,
+      timestamp: new Date().toISOString(),
+      userAgent: request.headers.get("user-agent") || "Unknown",
+    })
 
     return NextResponse.json({
       success: true,

@@ -8,7 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { LogOut, User, KeyRound } from "lucide-react"
+import { LogOut, User, KeyRound, MessageSquare } from "lucide-react"
+import Link from "next/link"
 
 interface CourseMarks {
   courseName: string
@@ -59,7 +60,23 @@ export default function DashboardPage() {
     }
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (student) {
+      // Log logout activity
+      try {
+        await fetch("/api/auth/logout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            rollNo: student.rollNo,
+            name: student.name,
+            email: (student as any).email,
+          }),
+        })
+      } catch (error) {
+        console.error("Error logging logout:", error)
+      }
+    }
     localStorage.removeItem("student")
     router.push("/login")
   }
@@ -136,6 +153,12 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="flex gap-2">
+              <Link href="/queries">
+                <Button variant="outline" className="gap-2 bg-transparent">
+                  <MessageSquare className="h-4 w-4" />
+                  Support
+                </Button>
+              </Link>
               <Button 
                 variant="outline" 
                 onClick={() => setShowPasswordChange(!showPasswordChange)} 
