@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/firebase"
+import { auth, db } from "@/lib/firebase"
 import { sendPasswordResetEmail } from "firebase/auth"
 import { rollNumberToEmail } from "@/lib/email"
+import { doc, getDoc } from "firebase/firestore"
 
 export async function POST(request: Request) {
   try {
@@ -9,6 +10,12 @@ export async function POST(request: Request) {
 
     if (!rollNo) {
       return NextResponse.json({ error: "Roll number required" }, { status: 400 })
+    }
+
+    // Check if user is registered in Firestore (prevents misleading success message)
+    const userDoc = await getDoc(doc(db, "users", rollNo))
+    if (!userDoc.exists()) {
+      return NextResponse.json({ error: "No account found with this roll number. Please contact your TA." }, { status: 404 })
     }
 
     // Convert roll number to email

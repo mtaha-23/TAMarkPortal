@@ -8,8 +8,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { LogOut, Shield, Activity, MessageSquare, Search } from "lucide-react"
+import { LogOut, Shield, Activity, MessageSquare, Search, UserPlus } from "lucide-react"
 import { QueryStatus } from "@/lib/admin"
+import Link from "next/link"
 
 interface ActivityLog {
   id: string
@@ -194,6 +195,12 @@ export default function AdminDashboard() {
             <span className="hidden sm:inline">Student Queries ({queries.filter(q => q.status === QueryStatus.OPEN).length} open)</span>
             <span className="sm:hidden">Queries ({queries.filter(q => q.status === QueryStatus.OPEN).length})</span>
           </Button>
+          <Link href="/admin/register-students" className="w-full sm:w-auto">
+            <Button variant="outline" className="gap-1 sm:gap-2 w-full text-sm">
+              <UserPlus className="h-3 w-3 sm:h-4 sm:w-4" />
+              Register Students
+            </Button>
+          </Link>
         </div>
 
         {/* Search and Filters */}
