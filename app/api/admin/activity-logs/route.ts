@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     let logs = querySnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
-    }))
+    } as any))
 
     // Sort by timestamp in JavaScript
     logs.sort((a: any, b: any) => {

@@ -10,7 +10,7 @@ export async function GET() {
     const queries = querySnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
-    }))
+    } as any))
 
     // Sort by createdAt in JavaScript
     queries.sort((a: any, b: any) => {

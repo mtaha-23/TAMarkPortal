@@ -28,11 +28,11 @@ export async function GET(request: Request) {
       return {
         id: doc.id,
         ...data
-      }
+      } as any
     })
 
     // Sort by createdAt in JavaScript instead of Firestore
-    queries.sort((a, b) => {
+    queries.sort((a: any, b: any) => {
       const dateA = new Date(a.createdAt || 0).getTime()
       const dateB = new Date(b.createdAt || 0).getTime()
       return dateB - dateA
