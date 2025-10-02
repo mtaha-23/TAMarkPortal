@@ -47,14 +47,21 @@ export default function QueriesPage() {
 
   const fetchQueries = async (rollNo: string) => {
     try {
+      console.log("Fetching queries for:", rollNo)
       const response = await fetch(`/api/queries/student?rollNo=${rollNo}`)
       const data = await response.json()
+      console.log("API response:", data)
 
       if (data.success) {
-        setQueries(data.queries)
+        setQueries(data.queries || [])
+        console.log("Queries loaded:", data.queries?.length || 0)
+      } else {
+        console.error("Failed to fetch queries:", data.error)
+        setError(data.error || "Failed to load queries")
       }
     } catch (error) {
       console.error("Error fetching queries:", error)
+      setError("Failed to load queries. Please try again.")
     } finally {
       setLoading(false)
     }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { db } from "@/lib/firebase"
-import { collection, query, where, getDocs, orderBy } from "firebase/firestore"
+import { collection, query, where, getDocs } from "firebase/firestore"
 
 export async function GET(request: Request) {
   try {
@@ -11,22 +11,39 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Roll number required" }, { status: 400 })
     }
 
+    console.log("Fetching queries for rollNo:", rollNo)
+
     // Get all queries for this student
     const q = query(
       collection(db, "queries"),
-      where("rollNo", "==", rollNo),
-      orderBy("createdAt", "desc")
+      where("rollNo", "==", rollNo)
     )
     
     const querySnapshot = await getDocs(q)
-    const queries = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }))
+    console.log("Found queries:", querySnapshot.docs.length)
+    
+    const queries = querySnapshot.docs.map(doc => {
+      const data = doc.data()
+      console.log("Query data:", data)
+      return {
+        id: doc.id,
+        ...data
+      }
+    })
+
+    // Sort by createdAt in JavaScript instead of Firestore
+    queries.sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0).getTime()
+      const dateB = new Date(b.createdAt || 0).getTime()
+      return dateB - dateA
+    })
 
     return NextResponse.json({ success: true, queries })
   } catch (error) {
     console.error("Error fetching student queries:", error)
-    return NextResponse.json({ error: "Failed to fetch queries" }, { status: 500 })
+    return NextResponse.json({ 
+      error: "Failed to fetch queries",
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }
