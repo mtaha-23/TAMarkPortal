@@ -97,6 +97,13 @@ export default function LoginPage() {
           </form>
         </CardContent>
       </Card>
+      
+      {/* Credit */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center">
+        <p className="text-sm text-gray-500">
+          Created by <span className="font-medium text-gray-700">Muhammad Taha</span>
+        </p>
+      </div>
     </div>
   )
 }
