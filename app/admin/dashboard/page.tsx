@@ -26,6 +26,7 @@ interface Query {
   rollNo: string
   name: string
   email: string
+  courses?: string
   subject: string
   message: string
   status: string
@@ -42,6 +43,8 @@ export default function AdminDashboard() {
   const [queries, setQueries] = useState<Query[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [courseFilter, setCourseFilter] = useState<string>("all")
   const [selectedQuery, setSelectedQuery] = useState<Query | null>(null)
   const [adminResponse, setAdminResponse] = useState("")
   const [adminComment, setAdminComment] = useState("")
@@ -118,11 +121,29 @@ export default function AdminDashboard() {
     log.activityType.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const filteredQueries = queries.filter(query =>
-    query.rollNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    query.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    query.subject.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Get unique courses for filter dropdown
+  const uniqueCourses = Array.from(new Set(queries.map(q => q.courses).filter(Boolean)))
+
+  const filteredQueries = queries.filter(query => {
+    // Search filter
+    const matchesSearch = 
+      query.rollNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      query.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      query.subject.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    // Status filter
+    const matchesStatus = statusFilter === "all" || query.status === statusFilter
+    
+    // Course filter
+    const matchesCourse = courseFilter === "all" || query.courses?.includes(courseFilter)
+    
+    return matchesSearch && matchesStatus && matchesCourse
+  })
+
+  // Count queries by status
+  const openCount = queries.filter(q => q.status === QueryStatus.OPEN).length
+  const inProgressCount = queries.filter(q => q.status === QueryStatus.IN_PROGRESS).length
+  const closedCount = queries.filter(q => q.status === QueryStatus.CLOSED).length
 
   if (loading) {
     return (
@@ -173,17 +194,70 @@ export default function AdminDashboard() {
           </Button>
         </div>
 
-        {/* Search */}
+        {/* Search and Filters */}
         <div className="mb-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder={activeTab === "logs" ? "Search logs..." : "Search queries..."}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+          <div className="flex flex-wrap gap-4">
+            <div className="relative flex-1 min-w-[300px]">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder={activeTab === "logs" ? "Search logs..." : "Search queries..."}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            {activeTab === "queries" && (
+              <>
+                {/* Status Filter */}
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-4 py-2 border rounded-md bg-white min-w-[150px]"
+                >
+                  <option value="all">All Status ({queries.length})</option>
+                  <option value={QueryStatus.OPEN}>Open ({openCount})</option>
+                  <option value={QueryStatus.IN_PROGRESS}>In Progress ({inProgressCount})</option>
+                  <option value={QueryStatus.CLOSED}>Closed ({closedCount})</option>
+                </select>
+
+                {/* Course Filter */}
+                <select
+                  value={courseFilter}
+                  onChange={(e) => setCourseFilter(e.target.value)}
+                  className="px-4 py-2 border rounded-md bg-white min-w-[200px]"
+                >
+                  <option value="all">All Courses</option>
+                  {uniqueCourses.map((course) => (
+                    <option key={course} value={course}>
+                      {course}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Clear Filters Button */}
+                {(statusFilter !== "all" || courseFilter !== "all" || searchTerm) && (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setStatusFilter("all")
+                      setCourseFilter("all")
+                      setSearchTerm("")
+                    }}
+                  >
+                    Clear Filters
+                  </Button>
+                )}
+              </>
+            )}
           </div>
+
+          {/* Filter Summary */}
+          {activeTab === "queries" && filteredQueries.length !== queries.length && (
+            <p className="text-sm text-gray-600 mt-2">
+              Showing {filteredQueries.length} of {queries.length} queries
+            </p>
+          )}
         </div>
 
         {/* Activity Logs Tab */}
@@ -240,9 +314,20 @@ export default function AdminDashboard() {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-3 py-1 bg-slate-800 text-white rounded-md font-mono font-bold text-sm">
+                          {query.rollNo}
+                        </span>
+                        <span className="text-gray-600 font-medium">{query.name}</span>
+                      </div>
                       <CardTitle className="text-lg">{query.subject}</CardTitle>
                       <CardDescription>
-                        From: {query.name} ({query.rollNo}) • {new Date(query.createdAt).toLocaleString()}
+                        {query.courses && (
+                          <span className="inline-block mr-2 text-blue-600 font-medium">
+                            📚 {query.courses}
+                          </span>
+                        )}
+                        • {new Date(query.createdAt).toLocaleString()}
                       </CardDescription>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${

@@ -5,7 +5,7 @@ import { QueryStatus } from "@/lib/admin"
 
 export async function POST(request: Request) {
   try {
-    const { rollNo, name, email, subject, message } = await request.json()
+    const { rollNo, name, email, courses, subject, message } = await request.json()
 
     if (!rollNo || !subject || !message) {
       return NextResponse.json({ 
@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       rollNo,
       name,
       email,
+      courses: courses || "Unknown",
       subject,
       message,
       status: QueryStatus.OPEN,

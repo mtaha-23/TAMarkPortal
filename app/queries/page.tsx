@@ -15,6 +15,7 @@ interface Query {
   id: string
   subject: string
   message: string
+  courses?: string
   status: string
   createdAt: string
   adminResponse: string | null
@@ -74,6 +75,11 @@ export default function QueriesPage() {
     setSuccess("")
 
     try {
+      // Get student's courses from marks API
+      const marksResponse = await fetch(`/api/student/marks?rollNo=${student?.rollNo}`)
+      const marksData = await marksResponse.json()
+      const courses = marksData.courses?.map((c: any) => c.courseName).join(", ") || "Unknown"
+
       const response = await fetch("/api/queries/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,6 +87,7 @@ export default function QueriesPage() {
           rollNo: student?.rollNo,
           name: student?.name,
           email: student?.email,
+          courses, // Add courses information
           subject,
           message,
         }),
@@ -233,7 +240,12 @@ export default function QueriesPage() {
                     <div className="flex-1">
                       <CardTitle className="text-lg">{query.subject}</CardTitle>
                       <CardDescription>
-                        Submitted: {new Date(query.createdAt).toLocaleString()}
+                        {query.courses && (
+                          <span className="inline-block mr-2 text-blue-600 font-medium">
+                            📚 {query.courses}
+                          </span>
+                        )}
+                        • Submitted: {new Date(query.createdAt).toLocaleString()}
                       </CardDescription>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
