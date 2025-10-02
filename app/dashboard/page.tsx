@@ -168,22 +168,22 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <User className="h-8 w-8 text-blue-600" />
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <User className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Student Portal</h1>
-                <p className="text-sm text-gray-600">{student?.name}</p>
+                <h1 className="text-lg sm:text-xl font-bold text-gray-900">Student Portal</h1>
+                <p className="text-xs sm:text-sm text-gray-600">{student?.name}</p>
               </div>
             </div>
-            <div className="flex gap-2">
-              <Link href="/queries">
-                <Button variant="outline" className="gap-2 bg-transparent relative">
-                  <MessageSquare className="h-4 w-4" />
+            <div className="flex flex-wrap gap-1 sm:gap-2 w-full sm:w-auto">
+              <Link href="/queries" className="flex-1 sm:flex-none">
+                <Button variant="outline" className="gap-1 sm:gap-2 bg-transparent relative w-full sm:w-auto text-xs sm:text-sm">
+                  <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
                   Queries
                   {unreadCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center">
                       {unreadCount}
                     </span>
                   )}
@@ -192,13 +192,14 @@ export default function DashboardPage() {
               <Button 
                 variant="outline" 
                 onClick={() => setShowPasswordChange(!showPasswordChange)} 
-                className="gap-2 bg-transparent"
+                className="gap-1 sm:gap-2 bg-transparent flex-1 sm:flex-none text-xs sm:text-sm"
               >
-                <KeyRound className="h-4 w-4" />
-                Change Password
+                <KeyRound className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Change Password</span>
+                <span className="sm:hidden">Password</span>
               </Button>
-              <Button variant="outline" onClick={handleLogout} className="gap-2 bg-transparent">
-                <LogOut className="h-4 w-4" />
+              <Button variant="outline" onClick={handleLogout} className="gap-1 sm:gap-2 bg-transparent flex-1 sm:flex-none text-xs sm:text-sm">
+                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
                 Logout
               </Button>
             </div>
@@ -206,7 +207,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
         {/* Change Password Card */}
         {showPasswordChange && (
           <Card className="mb-6">
@@ -288,9 +289,9 @@ export default function DashboardPage() {
           </Card>
         )}
 
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Your Marks</h2>
-          <p className="text-gray-600">Roll Number: {student?.rollNo}</p>
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Your Marks</h2>
+          <p className="text-sm sm:text-base text-gray-600">Roll Number: {student?.rollNo}</p>
         </div>
 
         {coursesData.length === 0 ? (
@@ -307,19 +308,19 @@ export default function DashboardPage() {
                   <CardTitle>{courseData.courseName}</CardTitle>
                   <CardDescription>Assessment scores and grades</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Assessment</TableHead>
-                        <TableHead className="text-right">Score</TableHead>
+                        <TableHead className="text-xs sm:text-sm">Assessment</TableHead>
+                        <TableHead className="text-right text-xs sm:text-sm">Score</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {Object.entries(courseData.marks).map(([assessment, score], markIndex) => (
                         <TableRow key={markIndex}>
-                          <TableCell className="font-medium">{assessment}</TableCell>
-                          <TableCell className="text-right">
+                          <TableCell className="font-medium text-xs sm:text-sm">{assessment}</TableCell>
+                          <TableCell className="text-right text-xs sm:text-sm">
                             {score === "" || score === "Not Graded" ? (
                               <span className="text-gray-400 italic">Not Graded</span>
                             ) : (

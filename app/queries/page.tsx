@@ -142,25 +142,23 @@ export default function QueriesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <ArrowLeft className="h-4 w-4" />
-                  Back to Dashboard
-                </Button>
-              </Link>
-            </div>
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+            <Link href="/dashboard">
+              <Button variant="ghost" size="sm" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                Back
+              </Button>
+            </Link>
             <div className="flex items-center gap-2">
-              <MessageSquare className="h-6 w-6 text-blue-600" />
-              <h1 className="text-xl font-bold">Support & Queries</h1>
+              <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+              <h1 className="text-lg sm:text-xl font-bold">Queries & Support</h1>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
         {success && (
           <Alert className="mb-6 border-green-500 bg-green-50">
             <AlertDescription className="text-green-700">{success}</AlertDescription>
@@ -169,7 +167,7 @@ export default function QueriesPage() {
 
         {/* Submit New Query Button */}
         {!showForm && (
-          <Button onClick={() => setShowForm(true)} className="mb-6 gap-2">
+          <Button onClick={() => setShowForm(true)} className="mb-4 sm:mb-6 gap-2 w-full sm:w-auto text-sm">
             <Send className="h-4 w-4" />
             Submit New Query
           </Button>
@@ -241,8 +239,8 @@ export default function QueriesPage() {
         )}
 
         {/* Existing Queries */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Your Queries</h2>
+        <div className="space-y-3 sm:space-y-4">
+          <h2 className="text-xl sm:text-2xl font-bold">Your Queries</h2>
 
           {queries.length === 0 ? (
             <Card>
@@ -259,26 +257,28 @@ export default function QueriesPage() {
                 className={query.hasUnreadResponse ? "border-2 border-blue-500 shadow-lg" : ""}
               >
                 <CardHeader>
-                  <div className="flex items-start justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-0">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <CardTitle className="text-lg">{query.subject}</CardTitle>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <CardTitle className="text-base sm:text-lg">{query.subject}</CardTitle>
                         {query.hasUnreadResponse && (
                           <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
                             NEW
                           </span>
                         )}
                       </div>
-                      <CardDescription>
+                      <CardDescription className="text-xs sm:text-sm mt-1">
                         {query.courses && (
                           <span className="inline-block mr-2 text-blue-600 font-medium">
                             📚 {query.courses}
                           </span>
                         )}
-                        • Submitted: {new Date(query.createdAt).toLocaleString()}
+                        <span className="block sm:inline">
+                          • Submitted: {new Date(query.createdAt).toLocaleString()}
+                        </span>
                       </CardDescription>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-semibold self-start ${
                       query.status === QueryStatus.OPEN ? "bg-yellow-100 text-yellow-800" :
                       query.status === QueryStatus.IN_PROGRESS ? "bg-blue-100 text-blue-800" :
                       "bg-green-100 text-green-800"

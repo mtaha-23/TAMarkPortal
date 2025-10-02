@@ -156,54 +156,56 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <header className="bg-slate-900 shadow-lg border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Shield className="h-8 w-8 text-blue-400" />
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400" />
               <div>
-                <h1 className="text-xl font-bold text-white">TA Dashboard</h1>
-                <p className="text-sm text-slate-300">{admin?.email}</p>
+                <h1 className="text-lg sm:text-xl font-bold text-white">TA Dashboard</h1>
+                <p className="text-xs sm:text-sm text-slate-300 truncate max-w-[200px] sm:max-w-none">{admin?.email}</p>
               </div>
             </div>
-            <Button variant="outline" onClick={handleLogout} className="gap-2 border-slate-600 text-white hover:bg-slate-800">
-              <LogOut className="h-4 w-4" />
+            <Button variant="outline" onClick={handleLogout} className="gap-1 sm:gap-2 border-slate-600 text-white hover:bg-slate-800 text-xs sm:text-sm">
+              <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
               Logout
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
         {/* Tab Navigation */}
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4 sm:mb-6">
           <Button
             variant={activeTab === "logs" ? "default" : "outline"}
             onClick={() => setActiveTab("logs")}
-            className="gap-2"
+            className="gap-1 sm:gap-2 w-full sm:w-auto text-sm"
           >
-            <Activity className="h-4 w-4" />
-            Activity Logs
+            <Activity className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">Activity Logs</span>
+            <span className="sm:hidden">Logs</span>
           </Button>
           <Button
             variant={activeTab === "queries" ? "default" : "outline"}
             onClick={() => setActiveTab("queries")}
-            className="gap-2"
+            className="gap-1 sm:gap-2 w-full sm:w-auto text-sm"
           >
-            <MessageSquare className="h-4 w-4" />
-            Student Queries ({queries.filter(q => q.status === QueryStatus.OPEN).length} open)
+            <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">Student Queries ({queries.filter(q => q.status === QueryStatus.OPEN).length} open)</span>
+            <span className="sm:hidden">Queries ({queries.filter(q => q.status === QueryStatus.OPEN).length})</span>
           </Button>
         </div>
 
         {/* Search and Filters */}
-        <div className="mb-6">
-          <div className="flex flex-wrap gap-4">
-            <div className="relative flex-1 min-w-[300px]">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+        <div className="mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4">
+            <div className="relative flex-1 min-w-full sm:min-w-[250px]">
+              <Search className="absolute left-3 top-2.5 sm:top-3 h-4 w-4 text-gray-400" />
               <Input
                 placeholder={activeTab === "logs" ? "Search logs..." : "Search queries..."}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 text-sm"
               />
             </div>
 
@@ -213,7 +215,7 @@ export default function AdminDashboard() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-4 py-2 border rounded-md bg-white min-w-[150px]"
+                  className="px-3 sm:px-4 py-2 border rounded-md bg-white w-full sm:w-auto sm:min-w-[150px] text-sm"
                 >
                   <option value="all">All Status ({queries.length})</option>
                   <option value={QueryStatus.OPEN}>Open ({openCount})</option>
@@ -225,7 +227,7 @@ export default function AdminDashboard() {
                 <select
                   value={courseFilter}
                   onChange={(e) => setCourseFilter(e.target.value)}
-                  className="px-4 py-2 border rounded-md bg-white min-w-[200px]"
+                  className="px-3 sm:px-4 py-2 border rounded-md bg-white w-full sm:w-auto sm:min-w-[200px] text-sm"
                 >
                   <option value="all">All Courses</option>
                   {uniqueCourses.map((course) => (
@@ -244,6 +246,7 @@ export default function AdminDashboard() {
                       setCourseFilter("all")
                       setSearchTerm("")
                     }}
+                    className="w-full sm:w-auto text-sm"
                   >
                     Clear Filters
                   </Button>
@@ -254,7 +257,7 @@ export default function AdminDashboard() {
 
           {/* Filter Summary */}
           {activeTab === "queries" && filteredQueries.length !== queries.length && (
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="text-xs sm:text-sm text-gray-600 mt-2">
               Showing {filteredQueries.length} of {queries.length} queries
             </p>
           )}
@@ -267,27 +270,28 @@ export default function AdminDashboard() {
               <CardTitle>Student Activity Logs</CardTitle>
               <CardDescription>Monitor all student login, logout, and portal activity</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Time</TableHead>
-                    <TableHead>Roll No</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Activity</TableHead>
-                    <TableHead>User Agent</TableHead>
+                    <TableHead className="text-xs sm:text-sm">Time</TableHead>
+                    <TableHead className="text-xs sm:text-sm">Roll No</TableHead>
+                    <TableHead className="text-xs sm:text-sm hidden md:table-cell">Name</TableHead>
+                    <TableHead className="text-xs sm:text-sm">Activity</TableHead>
+                    <TableHead className="text-xs sm:text-sm hidden lg:table-cell">User Agent</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredLogs.map((log) => (
                     <TableRow key={log.id}>
-                      <TableCell className="font-mono text-sm">
-                        {new Date(log.timestamp).toLocaleString()}
+                      <TableCell className="font-mono text-xs sm:text-sm whitespace-nowrap">
+                        {new Date(log.timestamp).toLocaleDateString()}<br className="sm:hidden"/>
+                        <span className="text-xs text-gray-500">{new Date(log.timestamp).toLocaleTimeString()}</span>
                       </TableCell>
-                      <TableCell>{log.rollNo}</TableCell>
-                      <TableCell>{log.name}</TableCell>
+                      <TableCell className="text-xs sm:text-sm font-medium">{log.rollNo}</TableCell>
+                      <TableCell className="text-xs sm:text-sm hidden md:table-cell">{log.name}</TableCell>
                       <TableCell>
-                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                        <span className={`px-2 py-1 rounded text-xs font-semibold whitespace-nowrap ${
                           log.activityType === "login" ? "bg-green-100 text-green-800" :
                           log.activityType === "logout" ? "bg-gray-100 text-gray-800" :
                           "bg-blue-100 text-blue-800"
@@ -295,7 +299,7 @@ export default function AdminDashboard() {
                           {log.activityType}
                         </span>
                       </TableCell>
-                      <TableCell className="text-xs text-gray-500 max-w-xs truncate">
+                      <TableCell className="text-xs text-gray-500 max-w-xs truncate hidden lg:table-cell">
                         {log.userAgent}
                       </TableCell>
                     </TableRow>
@@ -308,29 +312,29 @@ export default function AdminDashboard() {
 
         {/* Queries Tab */}
         {activeTab === "queries" && (
-          <div className="space-y-6">
+          <div className="space-y-3 sm:space-y-6">
             {filteredQueries.map((query) => (
               <Card key={query.id} className={selectedQuery?.id === query.id ? "border-blue-500" : ""}>
                 <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="px-3 py-1 bg-slate-800 text-white rounded-md font-mono font-bold text-sm">
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-0">
+                    <div className="flex-1 w-full sm:w-auto">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <span className="px-2 sm:px-3 py-1 bg-slate-800 text-white rounded-md font-mono font-bold text-xs sm:text-sm">
                           {query.rollNo}
                         </span>
-                        <span className="text-gray-600 font-medium">{query.name}</span>
+                        <span className="text-gray-600 font-medium text-sm sm:text-base">{query.name}</span>
                       </div>
-                      <CardTitle className="text-lg">{query.subject}</CardTitle>
-                      <CardDescription>
+                      <CardTitle className="text-base sm:text-lg">{query.subject}</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">
                         {query.courses && (
                           <span className="inline-block mr-2 text-blue-600 font-medium">
                             📚 {query.courses}
                           </span>
                         )}
-                        • {new Date(query.createdAt).toLocaleString()}
+                        <span className="block sm:inline">• {new Date(query.createdAt).toLocaleString()}</span>
                       </CardDescription>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-semibold self-start ${
                       query.status === QueryStatus.OPEN ? "bg-yellow-100 text-yellow-800" :
                       query.status === QueryStatus.IN_PROGRESS ? "bg-blue-100 text-blue-800" :
                       "bg-green-100 text-green-800"
@@ -381,17 +385,19 @@ export default function AdminDashboard() {
                           className="mt-1"
                         />
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex flex-col sm:flex-row gap-2">
                         <Button
                           onClick={() => handleUpdateQuery(query.id, QueryStatus.IN_PROGRESS)}
                           disabled={updating}
                           variant="outline"
+                          className="w-full sm:w-auto text-sm"
                         >
                           Mark In Progress
                         </Button>
                         <Button
                           onClick={() => handleUpdateQuery(query.id, QueryStatus.CLOSED)}
                           disabled={updating}
+                          className="w-full sm:w-auto text-sm"
                         >
                           {updating ? "Updating..." : "Close Query"}
                         </Button>
@@ -402,6 +408,7 @@ export default function AdminDashboard() {
                             setAdminComment("")
                           }}
                           variant="ghost"
+                          className="w-full sm:w-auto text-sm"
                         >
                           Cancel
                         </Button>
@@ -416,6 +423,7 @@ export default function AdminDashboard() {
                       }}
                       variant="outline"
                       size="sm"
+                      className="w-full sm:w-auto text-sm"
                     >
                       Respond to Query
                     </Button>
