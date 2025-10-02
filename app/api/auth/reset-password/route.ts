@@ -15,19 +15,13 @@ export async function POST(request: Request) {
     const email = rollNumberToEmail(rollNo)
 
     // Send password reset email through Firebase Auth
-    // This will send an email to the user with a link to reset their password
     await sendPasswordResetEmail(auth, email)
-
-    console.log(`Password reset email sent to ${email}`)
 
     return NextResponse.json({
       success: true,
-      email,
-      message: `A password reset link has been sent to ${email}. Please check your email.`,
+      message: `A password reset link has been sent to your email. Please check your inbox.`,
     })
   } catch (error: any) {
-    console.error("Password reset error:", error)
-    
     // Handle specific errors
     if (error.code === "auth/user-not-found") {
       return NextResponse.json({ 

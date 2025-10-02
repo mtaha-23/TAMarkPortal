@@ -34,7 +34,6 @@ export async function POST(request: Request) {
       message: "Query updated successfully",
     })
   } catch (error) {
-    console.error("Query update error:", error)
     return NextResponse.json({ error: "Failed to update query" }, { status: 500 })
   }
 }

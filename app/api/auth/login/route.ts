@@ -49,8 +49,6 @@ export async function POST(request: Request) {
       },
     })
   } catch (error: any) {
-    console.error("Login error:", error)
-    
     // Handle specific Firebase Auth errors
     if (error.code === "auth/invalid-credential" || error.code === "auth/user-not-found") {
       return NextResponse.json({ error: "Invalid credentials. Please check your roll number and password." }, { status: 401 })

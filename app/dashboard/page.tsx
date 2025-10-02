@@ -65,7 +65,7 @@ export default function DashboardPage() {
         setCoursesData(data.courses)
       }
     } catch (error) {
-      console.error("Error fetching marks:", error)
+      // Silent fail
     } finally {
       setLoading(false)
     }
@@ -81,7 +81,7 @@ export default function DashboardPage() {
         setUnreadCount(unread)
       }
     } catch (error) {
-      console.error("Error fetching unread count:", error)
+      // Silent fail - not critical
     }
   }
 
@@ -99,7 +99,7 @@ export default function DashboardPage() {
           }),
         })
       } catch (error) {
-        console.error("Error logging logout:", error)
+        // Silent fail - not critical
       }
     }
     localStorage.removeItem("student")

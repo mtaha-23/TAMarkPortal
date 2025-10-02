@@ -30,15 +30,11 @@ export async function POST(request: Request) {
     // Update to new password
     await updatePassword(user, newPassword)
 
-    console.log(`Password updated successfully for ${rollNo}`)
-
     return NextResponse.json({
       success: true,
       message: "Password changed successfully",
     })
   } catch (error: any) {
-    console.error("Change password error:", error)
-    
     // Handle specific errors
     if (error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
       return NextResponse.json({ 

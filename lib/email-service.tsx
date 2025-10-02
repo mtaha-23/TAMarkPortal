@@ -1,22 +1,13 @@
 export async function sendPasswordResetEmail(email: string, rollNo: string, newPassword: string) {
   try {
-    console.log("Attempting to send email to:", email)
-    console.log("API Key present:", !!process.env.RESEND_API_KEY)
-    
     if (!process.env.RESEND_API_KEY) {
-      console.log("======================================")
-      console.log("📧 PASSWORD RESET (No email service configured)")
-      console.log("======================================")
-      console.log(`To: ${email}`)
-      console.log(`Roll Number: ${rollNo}`)
-      console.log(`New Password: ${newPassword}`)
-      console.log("======================================")
+      // Email service not configured - silently fail
       return { success: true }
     }
 
     // Using Resend API
     const payload = {
-      from: "onboarding@resend.dev", // Resend test domain
+      from: "onboarding@resend.dev",
       to: email,
       subject: "Password Reset - Student Portal",
       html: `
@@ -33,8 +24,6 @@ export async function sendPasswordResetEmail(email: string, rollNo: string, newP
       `,
     }
 
-    console.log("Sending email with payload:", { ...payload, html: "[HTML content]" })
-
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -45,24 +34,13 @@ export async function sendPasswordResetEmail(email: string, rollNo: string, newP
     })
 
     const responseData = await response.json()
-    console.log("Resend API response:", responseData)
 
     if (!response.ok) {
-      console.error("Resend API error:", responseData)
-      throw new Error(`Failed to send email: ${JSON.stringify(responseData)}`)
+      throw new Error("Failed to send email")
     }
 
-    console.log("✅ Email sent successfully!")
     return { success: true }
   } catch (error) {
-    console.error("Email sending error:", error)
-    console.log("======================================")
-    console.log("📧 EMAIL FAILED - Password still reset in DB")
-    console.log("======================================")
-    console.log(`To: ${email}`)
-    console.log(`Roll Number: ${rollNo}`)
-    console.log(`New Password: ${newPassword}`)
-    console.log("======================================")
     return { success: false, error }
   }
 }
@@ -71,6 +49,5 @@ export async function sendPasswordResetEmail(email: string, rollNo: string, newP
 export async function sendPasswordResetEmailSMTP(email: string, rollNo: string, newPassword: string) {
   // This is a placeholder for SMTP implementation
   // You would need to install nodemailer and configure it
-  console.log(`[v0] Would send email to ${email} with password: ${newPassword}`)
   return { success: true }
 }

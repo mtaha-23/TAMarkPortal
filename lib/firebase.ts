@@ -13,16 +13,7 @@ const firebaseConfig = {
 
 // Validate Firebase config
 if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-  console.error("Firebase configuration is missing! Please check your .env.local file")
-  console.error("Config values:", {
-    apiKey: firebaseConfig.apiKey ? "SET" : "MISSING",
-    authDomain: firebaseConfig.authDomain ? "SET" : "MISSING",
-    projectId: firebaseConfig.projectId ? "SET" : "MISSING",
-    storageBucket: firebaseConfig.storageBucket ? "SET" : "MISSING",
-    messagingSenderId: firebaseConfig.messagingSenderId ? "SET" : "MISSING",
-    appId: firebaseConfig.appId ? "SET" : "MISSING",
-  })
-  throw new Error("Firebase configuration is incomplete. Please check your .env.local file.")
+  throw new Error("Firebase configuration is incomplete")
 }
 
 // Initialize Firebase

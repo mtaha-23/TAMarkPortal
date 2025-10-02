@@ -24,7 +24,6 @@ export async function GET(request: Request) {
       courses,
     })
   } catch (error) {
-    console.error("Error fetching marks:", error)
     return NextResponse.json({ error: "Failed to fetch marks" }, { status: 500 })
   }
 }

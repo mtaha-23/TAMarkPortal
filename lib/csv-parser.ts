@@ -3,16 +3,7 @@ import path from "path"
 
 // Get the CSV directory path
 function getCSVDir() {
-  // Check if CSV_Files is in the my-app directory first
-  const localPath = path.join(process.cwd(), "CSV_Files")
-  const parentPath = path.resolve(process.cwd(), "..", "CSV_Files")
-  
-  console.log("Current working directory:", process.cwd())
-  console.log("Checking local path:", localPath)
-  console.log("Checking parent path:", parentPath)
-  
-  // We'll try the local path first (my-app/CSV_Files)
-  return localPath
+  return path.join(process.cwd(), "CSV_Files")
 }
 
 // Parse a single CSV file
@@ -48,7 +39,6 @@ export async function getAllCSVFiles() {
       .filter((d) => d.isFile() && d.name.toLowerCase().endsWith(".csv"))
       .map((d) => path.join(csvDir, d.name))
   } catch (e) {
-    console.error("Failed to read CSV directory:", csvDir, e)
     return []
   }
 }
@@ -57,20 +47,16 @@ export async function getAllCSVFiles() {
 export async function findStudentInCSVs(rollNo: string) {
   try {
     const files = await getAllCSVFiles()
-    console.log("Found CSV files:", files)
     
     if (files.length === 0) {
-      console.error("No CSV files found!")
       return { found: false }
     }
     
     for (const file of files) {
-      console.log("Checking file:", file)
       const { fileName, rows } = await parseCSVFile(file)
       const student = rows.find((row) => row["Roll No."] === rollNo)
       
       if (student) {
-        console.log("Student found:", student)
         return {
           found: true,
           rollNo: student["Roll No."],
@@ -80,10 +66,8 @@ export async function findStudentInCSVs(rollNo: string) {
       }
     }
     
-    console.log("Student not found in any CSV:", rollNo)
     return { found: false }
   } catch (error) {
-    console.error("Error in findStudentInCSVs:", error)
     throw error
   }
 }

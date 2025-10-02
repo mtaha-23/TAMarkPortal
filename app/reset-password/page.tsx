@@ -31,7 +31,7 @@ export default function ResetPasswordPage() {
       const data = await response.json()
 
       if (data.success) {
-        setMessage(data.message || `A password reset link has been sent to ${data.email}`)
+        setMessage(data.message || "A password reset link has been sent to your email")
       } else {
         setError(data.error || "Failed to reset password")
       }

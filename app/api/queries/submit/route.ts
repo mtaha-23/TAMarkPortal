@@ -36,7 +36,6 @@ export async function POST(request: Request) {
       message: "Query submitted successfully",
     })
   } catch (error) {
-    console.error("Query submission error:", error)
     return NextResponse.json({ 
       error: "Failed to submit query" 
     }, { status: 500 })

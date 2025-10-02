@@ -18,7 +18,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error marking query as read:", error)
     return NextResponse.json({ error: "Failed to mark as read" }, { status: 500 })
   }
 }

@@ -28,8 +28,6 @@ export async function POST(request: Request) {
       },
     })
   } catch (error: any) {
-    console.error("Admin login error:", error)
-    
     if (error.code === "auth/invalid-credential" || error.code === "auth/user-not-found") {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
     }

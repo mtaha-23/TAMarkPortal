@@ -21,7 +21,6 @@ export async function GET() {
 
     return NextResponse.json({ success: true, queries })
   } catch (error) {
-    console.error("Error fetching all queries:", error)
     return NextResponse.json({ error: "Failed to fetch queries" }, { status: 500 })
   }
 }

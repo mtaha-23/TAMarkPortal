@@ -77,7 +77,7 @@ export default function AdminDashboard() {
       if (logsData.success) setLogs(logsData.logs)
       if (queriesData.success) setQueries(queriesData.queries)
     } catch (error) {
-      console.error("Error fetching data:", error)
+      // Silent fail
     } finally {
       setLoading(false)
     }
@@ -109,7 +109,7 @@ export default function AdminDashboard() {
         setAdminComment("")
       }
     } catch (error) {
-      console.error("Error updating query:", error)
+      // Silent fail
     } finally {
       setUpdating(false)
     }

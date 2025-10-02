@@ -59,17 +59,12 @@ export async function POST(request: Request) {
       },
     })
   } catch (error: any) {
-    console.error("Signup error:", error)
-    
     // Handle specific Firebase Auth errors
     if (error.code === "auth/email-already-in-use") {
       return NextResponse.json({ error: "User already registered. Please login." }, { status: 409 })
     }
     
-    return NextResponse.json({ 
-      error: "Signup failed", 
-      details: error instanceof Error ? error.message : String(error) 
-    }, { status: 500 })
+    return NextResponse.json({ error: "Signup failed" }, { status: 500 })
   }
 }
 
