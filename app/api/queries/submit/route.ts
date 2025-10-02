@@ -26,6 +26,8 @@ export async function POST(request: Request) {
       updatedAt: new Date().toISOString(),
       adminResponse: null,
       adminComment: null,
+      hasUnreadResponse: false, // Track if student has read TA response
+      responseReadAt: null,
     })
 
     return NextResponse.json({

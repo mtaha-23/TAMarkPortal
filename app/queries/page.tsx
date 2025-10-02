@@ -20,6 +20,8 @@ interface Query {
   createdAt: string
   adminResponse: string | null
   adminComment: string | null
+  hasUnreadResponse?: boolean
+  responseReadAt?: string | null
 }
 
 export default function QueriesPage() {
@@ -56,6 +58,12 @@ export default function QueriesPage() {
       if (data.success) {
         setQueries(data.queries || [])
         console.log("Queries loaded:", data.queries?.length || 0)
+        
+        // Auto-mark unread responses as read when viewing
+        const unreadQueries = (data.queries || []).filter((q: Query) => q.hasUnreadResponse)
+        for (const query of unreadQueries) {
+          markAsRead(query.id)
+        }
       } else {
         console.error("Failed to fetch queries:", data.error)
         setError(data.error || "Failed to load queries")
@@ -65,6 +73,18 @@ export default function QueriesPage() {
       setError("Failed to load queries. Please try again.")
     } finally {
       setLoading(false)
+    }
+  }
+
+  const markAsRead = async (queryId: string) => {
+    try {
+      await fetch("/api/queries/mark-read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ queryId }),
+      })
+    } catch (error) {
+      console.error("Error marking as read:", error)
     }
   }
 
@@ -234,11 +254,21 @@ export default function QueriesPage() {
             </Card>
           ) : (
             queries.map((query) => (
-              <Card key={query.id}>
+              <Card 
+                key={query.id}
+                className={query.hasUnreadResponse ? "border-2 border-blue-500 shadow-lg" : ""}
+              >
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-lg">{query.subject}</CardTitle>
+                      <div className="flex items-center gap-2">
+                        <CardTitle className="text-lg">{query.subject}</CardTitle>
+                        {query.hasUnreadResponse && (
+                          <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                            NEW
+                          </span>
+                        )}
+                      </div>
                       <CardDescription>
                         {query.courses && (
                           <span className="inline-block mr-2 text-blue-600 font-medium">
@@ -264,8 +294,17 @@ export default function QueriesPage() {
                   </div>
 
                   {query.adminResponse && (
-                    <div className="bg-blue-50 p-3 rounded border border-blue-200">
-                      <strong className="text-sm text-blue-900">TA Response:</strong>
+                    <div className={`p-3 rounded border ${
+                      query.hasUnreadResponse 
+                        ? "bg-blue-100 border-blue-400 shadow-md" 
+                        : "bg-blue-50 border-blue-200"
+                    }`}>
+                      <div className="flex items-center gap-2">
+                        <strong className="text-sm text-blue-900">TA Response:</strong>
+                        {query.hasUnreadResponse && (
+                          <span className="text-xs text-red-600 font-bold">● NEW</span>
+                        )}
+                      </div>
                       <p className="mt-1 text-sm text-blue-800">{query.adminResponse}</p>
                     </div>
                   )}

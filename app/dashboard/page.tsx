@@ -28,6 +28,7 @@ export default function DashboardPage() {
   const [passwordError, setPasswordError] = useState("")
   const [passwordSuccess, setPasswordSuccess] = useState("")
   const [changingPassword, setChangingPassword] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
   const router = useRouter()
 
   useEffect(() => {
@@ -43,6 +44,16 @@ export default function DashboardPage() {
 
     // Fetch marks
     fetchMarks(studentData.rollNo)
+    
+    // Fetch unread count
+    fetchUnreadCount(studentData.rollNo)
+    
+    // Poll for new responses every 30 seconds
+    const interval = setInterval(() => {
+      fetchUnreadCount(studentData.rollNo)
+    }, 30000)
+    
+    return () => clearInterval(interval)
   }, [router])
 
   const fetchMarks = async (rollNo: string) => {
@@ -54,9 +65,23 @@ export default function DashboardPage() {
         setCoursesData(data.courses)
       }
     } catch (error) {
-      console.error("[v0] Error fetching marks:", error)
+      console.error("Error fetching marks:", error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchUnreadCount = async (rollNo: string) => {
+    try {
+      const response = await fetch(`/api/queries/student?rollNo=${rollNo}`)
+      const data = await response.json()
+
+      if (data.success && data.queries) {
+        const unread = data.queries.filter((q: any) => q.hasUnreadResponse === true).length
+        setUnreadCount(unread)
+      }
+    } catch (error) {
+      console.error("Error fetching unread count:", error)
     }
   }
 
@@ -154,9 +179,14 @@ export default function DashboardPage() {
             </div>
             <div className="flex gap-2">
               <Link href="/queries">
-                <Button variant="outline" className="gap-2 bg-transparent">
+                <Button variant="outline" className="gap-2 bg-transparent relative">
                   <MessageSquare className="h-4 w-4" />
-                  Support
+                  Queries
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                      {unreadCount}
+                    </span>
+                  )}
                 </Button>
               </Link>
               <Button 

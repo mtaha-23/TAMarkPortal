@@ -16,7 +16,14 @@ export async function POST(request: Request) {
     }
 
     if (status) updateData.status = status
-    if (adminResponse !== undefined) updateData.adminResponse = adminResponse
+    if (adminResponse !== undefined) {
+      updateData.adminResponse = adminResponse
+      // Mark as unread if TA added/updated response
+      if (adminResponse) {
+        updateData.hasUnreadResponse = true
+        updateData.responseReadAt = null
+      }
+    }
     if (adminComment !== undefined) updateData.adminComment = adminComment
 
     // Update query in Firestore
